@@ -1,0 +1,17 @@
+How program should be organized:
+
+main:
+ handles exceptions that didn't get caught elsewhere.
+ Runs other modules.
+
+File Management:
+ Files are originaly on an FTP server.
+ Download those files.
+ Check daily for new file; should be one per day.
+ Those files are messy CSVs. Clean sufficient to bring into database.
+
+Bring Files into database:
+ Create connection.
+ Copy in all files that haven't been brought in.
+ There should be a table in the database that states which files have been cleaned/imported.
+
