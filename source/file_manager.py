@@ -1,18 +1,17 @@
-#Imports:
 from os import walk
 import psycopg2
 
-#Globals:
 database_info = 'String with dbname=dbname and user=user'
 file_data_location = 'String with path to file_data file'
 data_directory = 'String with path to our data directory'
 table_name = 'String with name of gps point table in postgres'
 
+#
 def get_file_data(filename):
 	file_data = []
 	with open(filename, 'r') as f:
 		file_data.extend(f)
-        for index, line in enumerte(file_data):
+        for index, line in enumerate(file_data):
                 line = line.split(',')
                 line = (line[0], bool(line[1]), bool(line[2]))
                 file_data[index] = line
@@ -36,7 +35,7 @@ def check_for_new_data(directory):
 	return new_file_list
 				
 def clean_data():
-	for file in new_files:
+        for file in new_files:
 		gpsdata = []
 		seensub = set()
 		with open(filename, 'r') as f:
