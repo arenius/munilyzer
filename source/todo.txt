@@ -1,0 +1,32 @@
+How program should be organized:
+
+main:
+ handles exceptions that didn't get caught elsewhere.
+ Runs other modules:
+  Every 12 hours run filemanagemnt
+  If there are new files, filemanager will return a list of them. If so:
+   Run analysis.
+
+File Management:
+ Files are originaly on an FTP server.
+ Download those files.(use ftplib)(don't mirror, just copy in .csv files so we have local backup)
+ Check daily for new file; should be one per day.
+ Those files are messy CSVs. Clean sufficient to bring into database.
+ There should be a table in the database that states which files have been cleaned/imported.
+
+Bring Files into database:
+ Create connection.
+ Copy in all files that haven't been brought in:
+
+Create geometries for newly copied data.
+Calculate and update avgspeed columns for newly copied in data.
+
+#run run analysis
+#create run blocks
+
+***The following should be looped a couple of times.  Ones that continue to change should be
+*investigated by hand.***
+#assign lines
+#end point analysis
+#broken run block analysis
+#break multi run block analysis
