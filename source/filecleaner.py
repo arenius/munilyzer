@@ -24,7 +24,7 @@ def get_files_to_clean():
     with psycopg2.connect(database_string) as conn:
         with conn.cursor() as cur:
             files_to_clean_list = []
-            cur.execute('SELECT file_name FROM files WHERE cleaned = FALSE')
+            cur.execute('SELECT file_name FROM files WHERE cleaned IS NULL')
             for row in cur:
                 clean_file(row[0])
-            cur.execute('UPDATE files SET cleaned = TRUE')
+            cur.execute('UPDATE files SET cleaned IS NULL')
