@@ -63,8 +63,13 @@ def download_files():
                     ftp.retrbinary("RETR " + file_name[0] , open(file_path, 'wb').write)
                     logging.debug("Successfully downloaded: " + file_name[0])
                     #If our download was successfull, update downloaded field
+                    logging.debug(cur.mogrify('UPDATE files SET downloaded = %s ' 
+                                              'WHERE file_name = %s', 
+                                              (datetime.utcnow(),file_name[0]))
+                                  )
                     cur.execute('UPDATE files SET downloaded = %s WHERE file_name = %s',
                                 (datetime.utcnow(),file_name[0]))
+                    conn.commit()
 
 def clean_file(file_name):
     file_path = download_directory + file_name
@@ -86,6 +91,14 @@ def clean_file(file_name):
         #Write clean data to file
         f.writelines(line_list)
 
+def file_name_check(file_name):
+    """Ensure that the file we are cleaning is one we should clean."""
+    if (file_name[:15] == "sfmtaAVLRawData" and
+        file_name[-4:] == ".csv"):
+        return True
+    else:
+        return False
+
 def get_files_to_clean():
     with psycopg2.connect(database_string) as conn:
         logging.debug("Connected to database")
@@ -94,12 +107,14 @@ def get_files_to_clean():
                         ' AND downloaded IS NOT NULL ')
             files_to_clean_list = cur.fetchall()
             for file_name in files_to_clean_list:
-                clean_file(file_name[0])
-                logging.debug("Cleaned file: " + file_name[0])
-                cur.execute('UPDATE files SET cleaned = %s WHERE file_name = %s',
-                            (datetime.now(),file_name[0]))
-        
+                if file_name_check(file_name[0]):
+                    clean_file(file_name[0])
+                    logging.debug("Cleaned file: " + file_name[0])
+                    cur.execute('UPDATE files SET cleaned = %s WHERE file_name = %s',
+                                (datetime.now(),file_name[0]))
+                    conn.commit()
+
 if __name__ == "__main__":
-    identify_new_files()
-    download_files()
-    #get_files_to_clean()
+    #identify_new_files()
+    #download_files()
+    get_files_to_clean()
